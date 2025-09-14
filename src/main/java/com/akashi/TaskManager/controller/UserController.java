@@ -8,6 +8,7 @@ package com.akashi.TaskManager.controller;
  *   Protected
  *  */
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.akashi.TaskManager.model.UserModel;
 import com.akashi.TaskManager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,10 @@ public class UserController {
 			return ResponseEntity.unprocessableEntity().body("User already exists!");
 		}
 
-		var createdUser = this.userRepository.save(userData);
-		return ResponseEntity.status(201).body("User created success");
+		var cryptedPass = BCrypt.withDefaults().hashToString(12, userData.getPassword().toCharArray());
+		userData.setPassword(cryptedPass);
+
+		this.userRepository.save(userData);
+		return ResponseEntity.status(201).body("User created success" + userData.getId());
 	}
 }
