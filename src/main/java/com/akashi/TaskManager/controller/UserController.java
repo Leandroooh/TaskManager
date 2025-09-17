@@ -11,7 +11,6 @@ package com.akashi.TaskManager.controller;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.akashi.TaskManager.model.UserModel;
 import com.akashi.TaskManager.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,8 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
 
-	@Autowired
-	private UserRepository userRepository;
+	final UserRepository userRepository;
+
+	public UserController(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 	@PostMapping("/create")
 	public ResponseEntity<String> createUser(@RequestBody UserModel userData) {

@@ -2,7 +2,6 @@ package com.akashi.TaskManager.controller;
 
 import com.akashi.TaskManager.model.TaskModel;
 import com.akashi.TaskManager.repository.TaskRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,8 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/tasks")
 public class TaskController {
 
-	@Autowired
-	private TaskRepository taskRepository;
+
+	final TaskRepository taskRepository;
+
+	public TaskController(TaskRepository taskRepository) {
+		this.taskRepository = taskRepository;
+	}
 
 	@PostMapping("/create")
 	public ResponseEntity<String> createTask(@RequestBody TaskModel taskData){

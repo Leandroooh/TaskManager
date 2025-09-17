@@ -6,7 +6,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -16,8 +15,11 @@ import java.util.Base64;
 @Component
 public class TaskAuth extends OncePerRequestFilter {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
+
+	public TaskAuth(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 
 	@Override
@@ -51,6 +53,9 @@ public class TaskAuth extends OncePerRequestFilter {
 				response.sendError(404, "User not found!");
 				return;
 			}
+
+			// Send userID for controller
+			request.setAttribute("userID", user.getId());
 
 			filterChain.doFilter(request, response);
 			return;
