@@ -21,13 +21,12 @@ public class TaskAuth extends OncePerRequestFilter {
 		this.userRepository = userRepository;
 	}
 
-
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
 		var servletPath = request.getServletPath();
 
-		if (servletPath.equals("/tasks/create")){
+		if (servletPath.startsWith("/tasks/")){
 			var authorization = request.getHeader("Authorization");
 			var tokenEncoded = authorization.substring("Basic".length()).trim();
 
@@ -50,7 +49,7 @@ public class TaskAuth extends OncePerRequestFilter {
 			var validatePass = BCrypt.verifyer().verify(password.toCharArray(), user.getPassword());
 
 			if(!validatePass.verified){
-				response.sendError(404, "User not found!");
+				response.sendError(401, "Username or Password is not valid!");
 				return;
 			}
 

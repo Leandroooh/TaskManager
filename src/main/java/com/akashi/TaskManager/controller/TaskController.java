@@ -4,14 +4,11 @@ import com.akashi.TaskManager.model.TaskModel;
 import com.akashi.TaskManager.repository.TaskRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -38,10 +35,16 @@ public class TaskController {
 		}
 
 		if (taskData.getStartAt().isAfter(taskData.getEndAt())){
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The endAt date is invalid!");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The endAt date is after startAt Date");
 		}
 
 		var task = taskRepository.save(taskData);
 		return ResponseEntity.status(201).body(task);
+	}
+
+	@GetMapping("/")
+	public List<TaskModel> listTask(HttpServletRequest request) {
+		var userID = request.getAttribute("userID");
+		return this.taskRepository.findByUserID((UUID) userID);
 	}
 }
