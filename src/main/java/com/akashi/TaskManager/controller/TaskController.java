@@ -37,6 +37,10 @@ public class TaskController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The startAt and endAt date is invalid");
 		}
 
+		if (taskData.getStartAt().isAfter(taskData.getEndAt())){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The endAt date is invalid!");
+		}
+
 		var task = taskRepository.save(taskData);
 		return ResponseEntity.status(201).body(task);
 	}
