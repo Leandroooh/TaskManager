@@ -2,6 +2,7 @@ package com.akashi.TaskManager.controller;
 
 import com.akashi.TaskManager.model.TaskModel;
 import com.akashi.TaskManager.repository.TaskRepository;
+import com.akashi.TaskManager.utils.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +47,24 @@ public class TaskController {
 	public List<TaskModel> listTask(HttpServletRequest request) {
 		var userID = request.getAttribute("userID");
 		return this.taskRepository.findByUserID((UUID) userID);
+	}
+
+	@PutMapping("/update/{id}")
+	public ResponseEntity updateTask(@RequestBody TaskModel taskModel, HttpServletRequest request, @PathVariable UUID id){
+		var task = taskRepository.findById(id).orElse(null);
+
+		if (task == null){
+			return ResponseEntity.status(400).body("User don't have this task available!");
+		}
+
+		var userID = request.getAttribute("userID");
+		if (!task.getUserID().equals(userID)){
+			return ResponseEntity.status(400).body("User don't have this task available!");
+		}
+
+		Utils.copyNonNullProperties(taskModel, task);
+
+		var taskUpdate = this.taskRepository.save(task);
+		return ResponseEntity.ok().body(this.taskRepository.save(taskUpdate));
 	}
 }
