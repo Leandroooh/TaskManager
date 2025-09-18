@@ -28,6 +28,7 @@ public class TaskModel {
 	@JoinColumn(name = "user_id")
 	private UUID userID;
 
+	// Error Exception
 	public void setTitle(String title) throws Exception {
 		if(title.length() > 50) {
 			throw new Exception("The length limit for the title is 50 characters!");
