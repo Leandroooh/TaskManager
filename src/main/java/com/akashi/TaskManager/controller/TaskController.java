@@ -54,7 +54,7 @@ public class TaskController {
 		var task = taskRepository.findById(id).orElse(null);
 
 		if (task == null){
-			return ResponseEntity.status(400).body("User don't have this task available!");
+			return ResponseEntity.status(400).body("User don't have this task available for update!");
 		}
 
 		var userID = request.getAttribute("userID");
@@ -65,6 +65,6 @@ public class TaskController {
 		Utils.copyNonNullProperties(taskModel, task);
 
 		var taskUpdate = this.taskRepository.save(task);
-		return ResponseEntity.ok().body(this.taskRepository.save(taskUpdate));
+		return ResponseEntity.ok().body(taskUpdate);
 	}
 }
