@@ -1,17 +1,18 @@
-FROM maven:3.9.1-openjdk-17 AS build
+FROM ubuntu:latest
 
-WORKDIR /app
+RUN apt-get update
+RUN apt-get install openjdk-17-jdk -y
 
-COPY pom.xml .
-COPY src ./src
+FROM openjdk:17-jdk-slim as build
 
-RUN mvn clean package -DskipTests
+COPY . .
 
-FROM openjdk:17-jdk-slim
-
-WORKDIR /app
-COPY --from=build /app/target/TaskManager-0.0.1-SNAPSHOT.jar app.jar
+RUN apt-get update && apt-get install -y maven
+RUN mvn clean install
 
 EXPOSE 8080
+
+FROM maven:3.9.1-openjdk-17
+COPY --from=build target/TaskManager-0.0.1-SNAPSHOT.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
